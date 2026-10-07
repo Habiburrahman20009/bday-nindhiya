@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#240818">
+<title>A Surprise For You 🎁</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="locked">
+
+<!-- background -->
+<div class="aurora"><i></i><i></i><i></i></div>
+<canvas id="petals"></canvas>
+<canvas id="confetti"></canvas>
+
+<!-- 1. LOADER -->
+<div id="loader" class="screen">
+  <div class="spin">🌸</div>
+  <p class="eyebrow">Loading your surprise...</p>
+</div>
+
+<!-- 2. PASSCODE -->
+<div id="lock" class="screen hidden">
+  <div class="lock-flower">🌷</div>
+  <h1 class="serif" id="lockTitle"></h1>
+  <p class="sub" id="lockHint"></p>
+  <div class="dots" id="dots"></div>
+  <div class="keypad" id="keypad"></div>
+  <p class="err" id="lockErr"></p>
+</div>
+
+<!-- 3. GIFT -->
+<div id="gift" class="screen hidden">
+  <p class="eyebrow" id="giftHint"></p>
+  <div class="giftbox" id="giftbox" role="button" aria-label="Open gift">
+    <div class="glow"></div>
+    <div class="lid"><span class="bow"></span></div>
+    <div class="base"></div>
+    <div class="burst" id="burst"></div>
+  </div>
+</div>
+
+<!-- 4. MAIN -->
+<main id="app" class="hidden"></main>
+
+<!-- floating music button -->
+<button id="musicBtn" class="music-btn hidden" aria-label="Toggle music">♪</button>
+
+<!-- lightbox -->
+<div id="lightbox" class="lightbox hidden">
+  <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <div class="lb-pol" id="lbPol"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="rotate"><div>📱</div><p>Please turn your phone upright (portrait) 💗</p></div>
+
+<script src="script.js"></script>
+</body>
+</html>
