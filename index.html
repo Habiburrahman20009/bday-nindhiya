@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#240818">
+<meta name="theme-color" content="#050d20">
 <title>A Surprise For You 🎁</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,7 @@
 
 <!-- background -->
 <div class="aurora"><i></i><i></i><i></i></div>
+<div class="bokeh" id="bokeh"></div>
 <canvas id="petals"></canvas>
 <canvas id="confetti"></canvas>
 
@@ -21,6 +22,8 @@
 <div id="loader" class="screen">
   <div class="spin">🌸</div>
   <p class="eyebrow">Loading your surprise...</p>
+  <div class="lbar"><i id="lbarFill"></i></div>
+  <p class="pct" id="pct">0%</p>
 </div>
 
 <!-- 2. PASSCODE -->
@@ -35,6 +38,7 @@
 
 <!-- 3. GIFT -->
 <div id="gift" class="screen hidden">
+  <div id="giftGreet" class="greet"></div>
   <p class="eyebrow" id="giftHint"></p>
   <div class="giftbox" id="giftbox" role="button" aria-label="Open gift">
     <div class="glow"></div>
@@ -48,12 +52,15 @@
 <main id="app" class="hidden"></main>
 
 <!-- floating music button -->
-<button id="musicBtn" class="music-btn hidden" aria-label="Toggle music">♪</button>
+<button id="musicBtn" class="music-btn hidden" aria-label="Toggle music"><span class="eq"><i></i><i></i><i></i></span></button>
 
 <!-- lightbox -->
 <div id="lightbox" class="lightbox hidden">
   <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
   <div class="lb-pol" id="lbPol"></div>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next photo">›</button>
+  <div class="lb-count" id="lbCount"></div>
 </div>
 
 <div id="toast" class="toast"></div>
