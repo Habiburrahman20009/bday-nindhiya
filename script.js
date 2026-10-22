@@ -103,14 +103,19 @@ const CONFIG = {
   garden: {                          // tap a flower → a special message
     eyebrow: "A garden for you",
     title: "Pick a flower",
-    hint: "Tap every flower to open it 🌸 Each one hides a little message, and when all of them are open, you can write a message to Habib 💌",
     flowers: [
-      { e: "🌻", t: "Sunflower",       x: "You make every day brighter. Please never stop shining." },
-      { e: "🌹", t: "Rose",            x: "A promise: I'll always be on your side, no matter what." },
-      { e: "🌷", t: "Tulip",           x: "A wish: may every dream you chase come true this year." },
-      { e: "🌺", t: "Hibiscus",        x: "Calm, kind, and unforgettable. That's you." },
-      { e: "🌸", t: "Cherry Blossom",  x: "Thank you for every single memory we've made together." },
-      { e: "🌼", t: "Daisy",           x: "🎟️ Coupon: one free hug, valid anytime, forever 🤗" }
+      { e: "🌻", t: "Sunflower",       h: "A Little Bloom of Sunshine",
+        x: "Young sunflowers follow the sun across the sky, and the flower has long stood for joy and loyalty. Being around you feels like that: everything gets a little warmer, and a little brighter." },
+      { e: "🌹", t: "Rose",            h: "A Promise, in Full Bloom",
+        x: "For a very long time, the rose has stood for deep care and respect. Here is mine, as a promise: I'll be on your side, in the easy days and the hard ones." },
+      { e: "🌷", t: "Tulip",           h: "A Wish for the Year Ahead",
+        x: "Tulips are among the first flowers of spring, so they stand for fresh starts and good wishes. Mine is simple: may this year bring every dream you're chasing a little closer." },
+      { e: "🌺", t: "Hibiscus",        h: "Warm Welcome, Gentle Heart",
+        x: "In many warm places, the hibiscus is a flower of welcome and kindness. It suits you. People feel at ease around you: calm, kind, and unforgettable." },
+      { e: "🌸", t: "Cherry Blossom",  h: "Moments Worth Keeping",
+        x: "Cherry blossoms last only a short while, which is why people stop to enjoy them while they bloom. Our memories feel that way to me: small, bright, and worth keeping. Thank you for every one." },
+      { e: "🌼", t: "Daisy",           h: "The Simplest Kind of Happy",
+        x: "The daisy's name comes from \"day's eye\", because it opens with the morning light. It stands for loyal friendship and simple joy, which is exactly what you are to me." }
     ],
     secret: {
       title: "You found them all! 💐",
@@ -164,40 +169,52 @@ const SND = { tick: () => chime([660], 0, .025), bad: () => chime([220, 185], .1
 /* ---------- petals / stars background ---------- */
 const pc = $("#petals"), px = pc.getContext("2d");
 let petals = [], petalsOn = false;
-const DPR = Math.min(devicePixelRatio, 2);   // cap: a 3x phone canvas costs 2.25x more fill work for no visible gain
-function sizeCanvas() { const w = innerWidth * DPR, h = innerHeight * DPR; for (const c of [pc, cc]) if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } }
-const cc = $("#confetti"), cx = cc.getContext("2d");
+const COARSE = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const DPR = Math.min(devicePixelRatio, COARSE ? 1.5 : 2);   // cap: tiny glowing dots gain nothing from a 3x canvas
+// Mobile browsers resize innerHeight while the URL bar slides in/out during scrolling. Size the canvases to the tallest
+// height seen (reset on width change) so those resizes never reallocate/clear the canvas or squash the stars.
+let SW = innerWidth, SH = innerHeight;
+function sizeCanvas() {
+  if (innerWidth !== SW) { SW = innerWidth; SH = innerHeight; } else SH = Math.max(SH, innerHeight);
+  const w = SW * DPR, h = SH * DPR;
+  for (const c of [pc, cc]) { if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } c.style.height = SH + "px"; }
+}
+const cc = $("#confetti"), cx = cc.getContext("2d"); cc.hidden = true;   // not composited while idle
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(sizeCanvas, 150); }); sizeCanvas();   // debounced: mobile URL-bar resizes fire while scrolling
-function makePetal(top) { const p = makePetal0(top); if (CONFIG.style.calm) { p.ch = "✦"; p.c = ["#e4c58f", "#a9c7f5"][Math.random() * 2 | 0]; p.s = rand(6, 11); p.o = rand(.2, .5); p.v *= .6; } return p; }
-function makePetal0(top) {
-  return { x: rand(0, innerWidth), y: top ? -20 : rand(0, innerHeight), s: rand(8, 18), v: rand(.4, 1.1), w: rand(.5, 1.5),
+function makePetal(top) {
+  const p = { x: rand(0, innerWidth), y: top ? -20 : rand(0, SH), s: rand(8, 18), v: rand(.4, 1.1), w: rand(.5, 1.5),
     a: rand(0, 6.28), r: rand(-.02, .02), ch: ["✿", "❀", "★", "✦", "❁"][Math.random() * 5 | 0], c: ["#a9c7f5", "#7fa8ee", "#ffd88a", "#c9dcff"][Math.random() * 4 | 0], o: rand(.35, .85) };
+  if (CONFIG.style.calm) { p.ch = "✦"; p.c = ["#e4c58f", "#a9c7f5"][Math.random() * 2 | 0]; p.s = rand(6, 11); p.o = rand(.2, .5); p.v *= .6; }
+  return p;
 }
 const stars = Array.from({ length: 105 }, () => ({ x: Math.random(), y: Math.random(), r: rand(.4, 1.4), p: rand(0, 6.28), s: rand(.01, .03), z: rand(.2, 1) }));
 let shoot = null, nextShoot = Date.now() + 4000;
-function drawSky() {
+function drawSky(k) {
   if (!CONFIG.style.stars) return;
   px.save(); px.scale(DPR, DPR); px.fillStyle = "#dbe8ff";
-  stars.forEach(s => { s.p += s.s; px.globalAlpha = .2 + .6 * Math.abs(Math.sin(s.p)); px.beginPath(); px.arc(s.x * innerWidth, ((s.y * innerHeight - scrollY * s.z * .3) % innerHeight + innerHeight) % innerHeight, s.r, 0, 6.28); px.fill(); });
-  if (!shoot && Date.now() > nextShoot) { shoot = { x: rand(.4, 1) * innerWidth, y: rand(0, .35) * innerHeight, l: 0 }; nextShoot = Date.now() + rand(6000, 11000); }
+  stars.forEach(s => { s.p += s.s * k; px.globalAlpha = .2 + .6 * Math.abs(Math.sin(s.p)); px.beginPath(); px.arc(s.x * innerWidth, ((s.y * SH - (COARSE ? 0 : scrollY) * s.z * .3) % SH + SH) % SH, s.r, 0, 6.28); px.fill(); });
+  if (!reduced && !shoot && Date.now() > nextShoot) { shoot = { x: rand(.4, 1) * innerWidth, y: rand(0, .35) * innerHeight, l: 0 }; nextShoot = Date.now() + rand(6000, 11000); }
   if (shoot) { shoot.x -= 9; shoot.y += 5; shoot.l++;
     const g = px.createLinearGradient(shoot.x, shoot.y, shoot.x + 70, shoot.y - 39); g.addColorStop(0, "rgba(255,255,255,.9)"); g.addColorStop(1, "rgba(255,255,255,0)");
     px.globalAlpha = 1; px.strokeStyle = g; px.lineWidth = 1.6; px.beginPath(); px.moveTo(shoot.x, shoot.y); px.lineTo(shoot.x + 70, shoot.y - 39); px.stroke();
     if (shoot.l > 60) shoot = null; }
   px.restore();
 }
-function drawPetals() {
-  px.clearRect(0, 0, pc.width, pc.height); drawSky();
-  if (petalsOn) {
+let lastT = 0;
+function drawPetals(t = performance.now()) {
+  requestAnimationFrame(drawPetals);
+  if ((COARSE || reduced) && t - lastT < (reduced ? 1000 : 30)) return;   // ~30fps on phones (motion scaled to match); once a second if motion is reduced
+  lastT = t; const k = reduced ? 0 : COARSE ? 2 : 1;
+  px.clearRect(0, 0, pc.width, pc.height); drawSky(k);
+  if (petalsOn && !reduced) {
     if (petals.length < (CONFIG.style.calm ? 12 : 34) && Math.random() < .05) petals.push(makePetal(true));
     petals.forEach(p => {
-      p.y += p.v; p.x += Math.sin(p.y / 40) * p.w; p.a += p.r;
+      p.y += p.v * k; p.x += Math.sin(p.y / 40) * p.w * k; p.a += p.r * k;
       px.save(); px.scale(DPR, DPR); px.translate(p.x, p.y); px.rotate(p.a);
       px.globalAlpha = p.o; px.fillStyle = p.c; px.font = p.s + "px serif"; px.fillText(p.ch, 0, 0); px.restore();
     });
-    petals = petals.filter(p => p.y < innerHeight + 30);
+    petals = petals.filter(p => p.y < SH + 30);
   }
-  requestAnimationFrame(drawPetals);
 }
 drawPetals();
 
@@ -216,10 +233,9 @@ function confetti(x = innerWidth / 2, y = innerHeight / 2, n = 120) {
     const a = rand(0, 6.28), s = rand(4, 13);
     conf.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 5, g: .25, w: rand(5, 10), h: rand(3, 6), r: rand(0, 6), vr: rand(-.3, .3), c: cols[Math.random() * cols.length | 0], life: rand(90, 160) });
   }
-  if (!confRun) { confRun = true; loopConf(); }
+  startConf();
 }
 const PAL = [["#ffd88a", "#fff2cf", "#e4c58f"], ["#a9c7f5", "#e6f0ff", "#7fa8ee"], ["#ffffff", "#dbe8ff", "#ffd88a"], ["#ffc9d6", "#fff0f4", "#e4c58f"]];
-const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function explode(x, y, shape) {
   const pal = PAL[Math.random() * PAL.length | 0], heart = shape === "heart", n = heart ? 48 : (rand(55, 78) | 0);
   for (let i = 0; i < n; i++) {
@@ -228,15 +244,16 @@ function explode(x, y, shape) {
     else { const a = rand(0, 6.2832), sp = Math.sqrt(rand(.2, 1)) * rand(4, 6.4); vx = Math.cos(a) * sp; vy = Math.sin(a) * sp; }
     conf.push({ spark: 1, x, y, vx, vy, g: heart ? .018 : .045, f: heart ? .955 : .962, c: pal[Math.random() * 3 | 0], life: rand(70, 105), w: rand(1.2, 2.3) });
   }
-  SND.fw(); if (!confRun) { confRun = true; loopConf(); }
+  SND.fw(); startConf();
 }
 function launch(x = innerWidth / 2, y = innerHeight * .3, shape = "") {
   if (reduced) return explode(x, y, shape);
   const sx = x + rand(-60, 60), g = .2, vy = -Math.sqrt(2 * g * Math.max(140, innerHeight - y));
   conf.push({ rocket: 1, x: sx, y: innerHeight + 8, vx: (x - sx) / (-vy / g), vy, g, ty: y, shape, life: 400 });
-  if (!confRun) { confRun = true; loopConf(); }
+  startConf();
 }
 const barrage = (n = 6) => { for (let i = 0; i < n; i++) setTimeout(() => launch(rand(.15, .85) * innerWidth, rand(.12, .45) * innerHeight, i === 2 ? "heart" : ""), i * 650); };
+const startConf = () => { if (!confRun) { confRun = true; cc.hidden = false; loopConf(); } };
 function loopConf() {
   cx.setTransform(1, 0, 0, 1, 0, 0); cx.clearRect(0, 0, cc.width, cc.height); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
   conf.forEach(p => {
@@ -258,11 +275,12 @@ function loopConf() {
     cx.globalAlpha = Math.min(1, p.life / 40); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore();
   });
   conf = conf.filter(p => p.life > 0);
-  if (conf.length) requestAnimationFrame(loopConf); else { confRun = false; cx.setTransform(1, 0, 0, 1, 0, 0); cx.clearRect(0, 0, cc.width, cc.height); }
+  if (conf.length) requestAnimationFrame(loopConf); else { confRun = false; cx.setTransform(1, 0, 0, 1, 0, 0); cx.clearRect(0, 0, cc.width, cc.height); cc.hidden = true; }
 }
 
 /* ---------- build the main page from CONFIG ---------- */
-const img = p => `<img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy" style="object-position:${esc(p.pos || "50% 50%")}" onerror="this.remove()">`;
+const dims = {};   // natural sizes, filled by the loader, so photos reserve their space (no layout shift)
+const img = p => `<img src="${esc(p.src)}" alt="${esc(p.caption)}"${dims[p.src] ? ` width="${dims[p.src][0]}" height="${dims[p.src][1]}"` : ""} style="object-position:${esc(p.pos || "50% 50%")}" onerror="this.remove()">`;
 function cakeSVG() {
   const xs = [70, 95, 120, 145, 170];
   let drip = ""; { let x = 214; const y = 100; drip = `M58 ${y - 6} H182 V${y}`; for (let i = 0; i < 7; i++) { const w = 124 / 7, d = [10, 18, 8, 22, 12, 17, 9][i]; drip += ` Q${(182 - w * i - w / 2).toFixed(1)} ${y + d * 1.6} ${(182 - w * (i + 1)).toFixed(1)} ${y}`; } drip += " Z"; }
@@ -375,10 +393,8 @@ function buildMain() {
   <section id="gardenSec">
     <p class="eyebrow rv">${esc(C.garden.eyebrow)}</p>
     <h2 class="rv d1">${esc(C.garden.title)}</h2>
-    <p class="sub rv d2">${esc(C.garden.hint)}</p>
     <div class="garden rv d2">${C.garden.flowers.map((f, i) => `<button class="gf" data-i="${i}" aria-label="${esc(f.t)}" style="--h:${[96, 122, 84, 110, 92, 104][i % 6]}px;--dl:${i * .35}s;--dx:${[-4, 5, -6, 6, -3, 7][i % 6]}px;--dy:${[0, 38, 12, 30, 4, 42][i % 6]}px"><span class="tp">tap me</span><span class="bl">${f.e}</span><i class="stem"></i><em class="nm">${esc(f.t)}</em></button>`).join("")}</div>
     <div class="count" id="gcount"></div>
-    <div class="glock" id="glock">🔒 <b>A message box for Habib</b><span>unlocks when all flowers are open</span></div>
     <div class="secret" id="gsecret"></div>
   </section>
 
@@ -567,12 +583,23 @@ function openMain() {
   audio.play().catch(() => { });
 }
 
-addEventListener("load", async () => {
-  CONFIG.photos.items.forEach(p => { const i = new Image(); i.src = p.src; });
-  const fill = $("#lbarFill"), pct = $("#pct"), t0 = performance.now();
-  await new Promise(res => { const f = () => { const k = Math.min(1, (performance.now() - t0) / 2000); fill.style.width = k * 100 + "%"; pct.textContent = Math.round(k * 100) + "%"; k < 1 ? requestAnimationFrame(f) : res(); }; f(); });
-  leave($("#loader")); await wait(500); startLock();
+/* ---------- boot: progress reflects the assets actually awaited; hard timeout so it can never hang ---------- */
+const fontsReady = () => new Promise(res => {
+  const l = $("#fonts"), go = () => Promise.all(["400 1em 'Cormorant Garamond'", "300 1em Jost"].map(f => document.fonts.load(f))).then(res, res);
+  l.media === "all" ? go() : (l.addEventListener("load", go), l.addEventListener("error", res));
 });
+(async function boot() {
+  const fill = $("#lbarFill"), pct = $("#pct"), items = CONFIG.photos.items, total = items.length + 1, MIN = 1200, MAX = 6000;
+  let done = 0, shown = -1; const ok = () => { done++; };
+  items.forEach(p => { const i = new Image(); i.onload = () => { dims[p.src] = [i.naturalWidth, i.naturalHeight]; ok(); }; i.onerror = ok; i.src = p.src; });
+  Promise.race([fontsReady(), wait(3000)]).then(ok);
+  const t0 = performance.now();
+  await new Promise(res => { (function tick() {
+    const t = performance.now() - t0, end = t >= MAX || (done >= total && t >= MIN), k = end ? 1 : Math.min(done / total, t / MIN), n = Math.round(k * 100);
+    if (n !== shown) { shown = n; fill.style.transform = `scaleX(${k})`; pct.textContent = n + "%"; }
+    end ? res() : setTimeout(tick, 40); })(); });
+  leave($("#loader")); await wait(500); startLock();
+})();
 
 /* ---------- extra effects ---------- */
 function initFX() {
@@ -582,13 +609,13 @@ function initFX() {
     e.style.cssText = `left:${x}px;top:${y}px;--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d}px;font-size:${rand(10, 20)}px`;
     document.body.appendChild(e); setTimeout(() => e.remove(), 900); } };
   let last = 0;
-  CONFIG.style.sparkles && addEventListener("pointerdown", e => { if (!e.target.closest("button")) sp(e.clientX, e.clientY, 7, 90); });
-  CONFIG.style.sparkles && addEventListener("pointermove", e => { const t = Date.now(); if (t - last > 70 && (e.pressure > 0 || e.pointerType === "mouse")) { last = t; sp(e.clientX, e.clientY, 1, 30); } });
+  CONFIG.style.sparkles && !reduced && addEventListener("pointerdown", e => { if (!e.target.closest("button")) sp(e.clientX, e.clientY, 7, 90); });
+  CONFIG.style.sparkles && !reduced && addEventListener("pointermove", e => { const t = Date.now(); if (t - last > 70 && e.pointerType === "mouse") { last = t; sp(e.clientX, e.clientY, 1, 30); } });
   setInterval(() => { if (document.hidden || !CONFIG.style.balloons) return;                                                  // rising balloons
     const b = document.createElement("span"); b.className = "balloon"; b.textContent = ["🎈", "🎈", "💗", "🎀"][Math.random() * 4 | 0];
     b.style.cssText = `left:${rand(2, 92)}vw;font-size:${rand(26, 44)}px;animation-duration:${rand(9, 15)}s`;
     document.body.appendChild(b); setTimeout(() => b.remove(), 16000); }, 2600);
-  (CONFIG.style.tilt ? $$(".pol") : []).forEach(el => {                                                                         // 3D tilt + glare on photos
+  (CONFIG.style.tilt && !reduced ? $$(".pol") : []).forEach(el => {                                                                         // 3D tilt + glare on photos
     const gl = document.createElement("i"); gl.className = "glare"; el.querySelector(".ph").appendChild(gl);
     el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
       el.style.setProperty("--ry", (px - .5) * 16 + "deg"); el.style.setProperty("--rx", -(py - .5) * 16 + "deg");
@@ -620,17 +647,17 @@ function scatterFlowers() {
 /* ---------- flower garden ---------- */
 function initGarden() {
   const G = CONFIG.garden, done = new Set(), total = G.flowers.length;
-  const cnt = () => { $("#gcount").textContent = done.size >= total ? "All flowers are open 💐" : done.size + " / " + total + " flowers opened · " + (total - done.size) + " to go"; if (done.size >= total) $("#glock").classList.add("hide"); };
+  const cnt = () => { $("#gcount").textContent = done.size >= total ? "All flowers are open 💐" : done.size + " / " + total + " flowers opened · " + (total - done.size) + " to go"; };
   cnt();
-  const card = document.createElement("div"); card.className = "fcard hidden";
-  card.innerHTML = '<div class="fbox"><div class="fe"></div><h3 class="serif"></h3><p></p><button class="btn">Close 💗</button></div>';
+  const card = document.createElement("div"); card.className = "fcard hidden"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true");
+  card.innerHTML = '<div class="fbox"><div class="fe"></div><div class="fn"></div><h3 class="serif"></h3><i class="fr"></i><p></p><button class="btn">Close 💗</button></div>';
   document.body.appendChild(card);
   const secret = () => { const g = $("#gsecret"), S = G.secret, D = CONFIG.discord; let sends = 0;
     g.innerHTML = `<h3 class="serif">${esc(S.title)}</h3><p>${esc(S.text)}</p><div class="ask"><label for="cmt">${esc(S.ask)}</label>
       <textarea id="cmt" maxlength="500" rows="4" placeholder="${esc(S.placeholder)}"></textarea>
       <button class="btn" id="cmtBtn">${esc(S.button)}</button><div class="cstat" id="cstat">${esc(S.note)}</div></div>`;
-    g.scrollIntoView({ behavior: "smooth", block: "start" });
-    [0, 500, 1000].forEach(t => setTimeout(() => confetti(rand(.2, .8) * innerWidth, rand(.2, .5) * innerHeight, 120), t)); barrage(5);
+    g.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    [0, 700].forEach(t => setTimeout(() => confetti(rand(.2, .8) * innerWidth, rand(.2, .5) * innerHeight, 90), t)); barrage(3);
     $("#cmtBtn").onclick = async () => {
       const txt = $("#cmt").value.trim(), st = $("#cstat"), btn = $("#cmtBtn");
       if (!txt) { st.textContent = S.empty; return; }
@@ -647,9 +674,10 @@ function initGarden() {
   };
   card.onclick = e => { if (e.target === card || e.target.tagName === "BUTTON") { card.classList.add("hidden"); if (done.size === total && !$("#gsecret").innerHTML) setTimeout(secret, 300); } };
   $$(".gf").forEach(b => b.onclick = () => {
-    const f = G.flowers[+b.dataset.i]; SND.flower(); b.classList.add("open"); done.add(+b.dataset.i); cnt();
-    const r = b.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + 20, 60); navigator.vibrate && navigator.vibrate(40);
-    $(".fe", card).textContent = f.e; $("h3", card).textContent = f.t; $("p", card).textContent = f.x; card.classList.remove("hidden");
+    const f = G.flowers[+b.dataset.i], first = !b.classList.contains("open"); SND.flower(); b.classList.add("open"); done.add(+b.dataset.i); cnt();
+    const r = b.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + 20, 18); navigator.vibrate && navigator.vibrate(40);
+    const show = () => { $(".fe", card).textContent = f.e; $(".fn", card).textContent = f.t; $("h3", card).textContent = f.h; $("p", card).textContent = f.x; card.classList.remove("hidden"); $(".btn", card).focus({ preventScroll: true }); };
+    first && !reduced ? setTimeout(show, 800) : show();   // first tap: let the flower bloom before its message appears
   });
 }
 
@@ -698,22 +726,21 @@ function initHero() {
 
 /* ---------- scroll effects: progress bar, photo parallax, glowing timeline, section dots ---------- */
 function initScrollFX() {
-  const pols = $$(".pol"), tl = $(".tl"), evs = $$(".ev"), secs = $$("main section:not(#voiceSec)"), aurora = $(".aurora");
+  const pols = $$(".pol"), tl = $(".tl"), evs = $$(".ev"), secs = $$("main section:not(#voiceSec)"), fine = !reduced && matchMedia("(hover: hover) and (pointer: fine)").matches;
   const bar = document.createElement("div"); bar.id = "scrollbar"; document.body.appendChild(bar);
   const nav = document.createElement("nav"); nav.id = "snav"; nav.setAttribute("aria-label", "Sections");
-  secs.forEach((sec, i) => { const b = document.createElement("button"); const h = sec.querySelector("h2, h1"); b.setAttribute("aria-label", h ? (h.getAttribute("aria-label") || h.textContent) : "Section " + (i + 1)); b.onclick = () => sec.scrollIntoView({ behavior: "smooth" }); nav.appendChild(b); });
+  secs.forEach((sec, i) => { const b = document.createElement("button"); const h = sec.querySelector("h2, h1"); b.setAttribute("aria-label", h ? (h.getAttribute("aria-label") || h.textContent) : "Section " + (i + 1)); b.onclick = () => sec.scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); nav.appendChild(b); });
   document.body.appendChild(nav); setTimeout(() => nav.classList.add("on"), 100);
   const dots = [...nav.children]; let tick = false;
   const run = () => { tick = false; const vh = innerHeight;
     // read phase (no style writes between reads, so layout is computed once)
     const sy = scrollY, max = document.documentElement.scrollHeight - vh;
-    const pr = pols.map(el => el.getBoundingClientRect()), tr = tl && tl.getBoundingClientRect();
+    const pr = fine ? pols.map(el => el.getBoundingClientRect()) : [], tr = tl && tl.getBoundingClientRect();
     const er = evs.map(e => e.getBoundingClientRect().top), sr = secs.map(sec => sec.getBoundingClientRect());
     // write phase
-    bar.style.width = sy / max * 100 + "%";
-    aurora.style.setProperty("--sy", sy);   // scoped: setting it on <html> re-styled the whole page on every scroll frame
-    pols.forEach((el, i) => { const r = pr[i]; if (r.bottom < -120 || r.top > vh + 120) return; const v = (((r.top + r.height / 2) / vh - .5) * -28).toFixed(1) + "px"; if (el._py !== v) { el._py = v; el.style.setProperty("--py", v); } });
-    if (tr) tl.style.setProperty("--p", (Math.min(1, Math.max(0, (vh * .62 - tr.top) / tr.height)) * 100).toFixed(1) + "%");
+    bar.style.transform = "scaleX(" + Math.min(1, sy / max || 0).toFixed(4) + ")";   // transform: no layout/paint per frame
+    fine && pols.forEach((el, i) => { const r = pr[i]; if (r.bottom < -120 || r.top > vh + 120) return; const v = (((r.top + r.height / 2) / vh - .5) * -28).toFixed(1) + "px"; if (el._py !== v) { el._py = v; el.style.setProperty("--py", v); } });
+    if (tr) tl.style.setProperty("--p", Math.min(1, Math.max(0, (vh * .62 - tr.top) / tr.height)).toFixed(3));
     evs.forEach((e, i) => e.classList.toggle("lit", er[i] < vh * .64));
     sr.forEach((r, i) => dots[i].classList.toggle("on", r.top <= vh / 2 && r.bottom > vh / 2)); };
   addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(run); } }, { passive: true }); addEventListener("resize", run); run();
