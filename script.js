@@ -26,10 +26,7 @@ const CONFIG = {
     eyebrow: "A letter for you",
     title: "My dearest Nindhiya,",
     paragraphs: [
-      "Thank you for being one of the best women in my life. You have left a mark on my heart that will not easily fade, and the way you live your life is a guide that keeps me growing into a stronger, more resilient person.",
-      "I admire you so much. From the stage to your first-place photography certificate, you shine in your own way: cheerful, full of energy, and making everyone around you smile.",
-      "As you turn 18, I hope everything you wish for comes true, that your path is always made easy, and that every problem finds its way to a solution.",
-      "I am so proud of you. From the very deepest part of my heart."
+      "gatau mau isi apa."
     ],
     signature: "Habib"
   },
