@@ -12,7 +12,7 @@ const CONFIG = {
   hero: {
     eyebrow: "You're the star of today",
     date: "20 November · the most special day",
-    quote: "Wishing you happiness, good health, and all your dreams come true 💗"
+    quote: "a few words for you"
   },
 
   cake: {
