@@ -195,33 +195,21 @@ section h2{font-family:var(--serif);font-weight:400;font-size:38px;line-height:1
 
 @media (prefers-reduced-motion:reduce){*,:before,:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
-/* hero photo (top of page) */
-.hero-photo-wrap{margin:0 0 26px;display:flex;flex-direction:column;align-items:center}
-.hero-photo{position:relative;width:min(62vw,250px);height:min(80vw,325px);border-radius:140px 140px 24px 24px;overflow:hidden;cursor:pointer;
-  border:2px solid rgba(255,216,138,.65);box-shadow:0 0 0 8px rgba(255,255,255,.05),0 0 60px rgba(47,95,184,.5),0 24px 50px rgba(0,0,0,.55);
-  background:linear-gradient(135deg,#b9d3ff,#1f4a9e);animation:glowp 4s ease-in-out infinite}
-.hero-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform 1.2s}
-.hero-photo:hover img{transform:scale(1.06)}
-.hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(4,11,28,.45))}
-.hero-photo-wrap figcaption{margin-top:14px;font-style:italic;font-size:20px;color:var(--gold)}
 @keyframes glowp{50%{box-shadow:0 0 0 12px rgba(255,255,255,.04),0 0 90px rgba(47,95,184,.7),0 24px 50px rgba(0,0,0,.55)}}
 
 /* no blue selection on photos, glowing extras */
 img{-webkit-user-drag:none}
-.pol,.hero-photo,.lightbox,.giftbox{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-.pol img,.hero-photo img,.lb-pol img{pointer-events:none;user-select:none}
+.pol,.lightbox,.giftbox{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pol img,.lb-pol img{pointer-events:none;user-select:none}
 ::selection{background:rgba(169,199,245,.35);color:inherit}
 img::selection{background:transparent}
 #scrollbar{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 0;will-change:transform;z-index:100;background:linear-gradient(90deg,var(--pink),var(--gold),var(--violet));box-shadow:0 0 12px var(--pink)}
 .sp{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-50%);animation:spout .9s ease-out forwards}
 @keyframes spout{to{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(.3);opacity:0}}
-.balloon{position:fixed;bottom:-60px;z-index:4;pointer-events:none;opacity:.75;animation:rise linear forwards}
-@keyframes rise{50%{transform:translate(-26px,-60vh) rotate(-8deg)}to{transform:translate(26px,-118vh) rotate(8deg)}}
 section h2{background:linear-gradient(90deg,var(--ink),var(--pink),var(--gold),var(--ink));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
 #final h2 em{-webkit-text-fill-color:var(--pink)}
 
 /* flower garden */
-.garden{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 0;width:100%;margin-top:30px;align-items:end}
 .gf{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:215px;padding:0;color:inherit;
   transform-origin:bottom center;animation:sway 3.6s ease-in-out infinite;animation-delay:var(--dl)}
 .gf .bl{font-size:54px;line-height:1;position:relative;z-index:2;filter:drop-shadow(0 0 14px rgba(47,95,184,.6));transition:transform .6s cubic-bezier(.3,1.6,.5,1),filter .6s}
@@ -251,21 +239,13 @@ section h2{background:linear-gradient(90deg,var(--ink),var(--pink),var(--gold),v
 .secret:empty{display:none}.secret h3{font-weight:400;font-size:30px;margin:0 0 8px;color:var(--gold)}.secret p{margin:0}
 
 /* comment box */
-.ask{margin-top:20px;text-align:left}
-.ask label{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:10px;text-align:center}
-.ask textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;padding:14px;resize:none;outline:none}
-.ask textarea:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(169,199,245,.25)}
-.ask .btn{display:block;width:100%;margin-top:12px}
-.ask .btn:disabled{opacity:.6}
-.cstat{min-height:20px;margin-top:10px;text-align:center;font-size:13px;color:var(--mute)}
-.cdone{text-align:center;font-family:var(--serif);font-size:22px;color:var(--gold);line-height:1.5;padding:10px 0}
 
 /* mobile portrait hardening */
 html{-webkit-text-size-adjust:100%;background:var(--bg);color-scheme:dark}
 body{touch-action:manipulation}
 section{min-height:100vh;min-height:100svh;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right))}
 @media (max-height:680px){.keypad{grid-template-columns:repeat(3,60px);gap:10px}.keypad button{height:60px;font-size:22px}.dots{margin:14px 0}#lock h1{font-size:28px}}
-@media (max-width:360px){section h2{font-size:32px}.hero-photo{width:200px}.gf .bl{font-size:46px}.pol{width:88%}}
+@media (max-width:360px){section h2{font-size:32px}.gf .bl{font-size:46px}.pol{width:88%}}
 #rotate{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;font-family:var(--serif);font-size:22px}
 #rotate div{font-size:60px;animation:float 2s infinite}
 /* only a phone held sideways, and only on the PIN / gift screens (they cannot fit); the scrolling site works in landscape */
@@ -280,7 +260,7 @@ section h2{background:none;-webkit-text-fill-color:currentColor;animation:none;c
 .rule{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 .btn{background:transparent;border:1px solid var(--gold);color:var(--gold);box-shadow:none;letter-spacing:.16em;text-transform:uppercase;font-size:12px}
 .btn:active{background:rgba(228,197,143,.12)}
-.cake,.scroll,.lock-flower,.heart,.hero-photo{animation:none}
+.cake,.scroll,.lock-flower,.heart{animation:none}
 .spin{filter:none}.giftbox .glow{background:radial-gradient(circle,rgba(228,197,143,.22),transparent 65%)}
 .giftbox .base{background:linear-gradient(#1f4a9e,#12306b)}.giftbox .lid{background:linear-gradient(#2a5cb5,#173a82)}
 .pol:nth-child(odd){--rot:-1.5deg}.pol:nth-child(even){--rot:1.5deg}.pol:before{background:rgba(228,197,143,.5)}
@@ -298,7 +278,6 @@ section h2{background:none;-webkit-text-fill-color:currentColor;animation:none;c
 .gf.open .bl{filter:drop-shadow(0 0 12px rgba(228,197,143,.6))}
 
 .pnote{font-family:var(--serif);font-style:italic;color:var(--gold);margin-top:12px;font-size:17px;line-height:1.4;min-height:48px}
-.vbar{width:100%;max-width:300px;height:3px;background:rgba(255,255,255,.14);margin:22px auto 0}.vbar i{display:block;height:100%;width:0;background:var(--gold)}
 .heart{font-family:var(--serif);color:var(--gold);letter-spacing:.3em;font-size:32px;text-transform:uppercase}
 
 /* ===== BLUE THEME (navy + soft sky blue + champagne gold) ===== */
@@ -425,7 +404,6 @@ section:not(#hero):before{content:"✦";display:block;color:var(--gold);opacity:
   color:var(--gold);font-size:30px;line-height:1;padding:0 0 4px;cursor:pointer;z-index:2;backdrop-filter:blur(6px);transition:.2s}
 .lb-nav:active{transform:scale(.9);background:rgba(228,197,143,.18)}
 .lb-prev{left:max(10px,env(safe-area-inset-left))}.lb-next{right:max(10px,env(safe-area-inset-right))}
-.lightbox.single .lb-nav,.lightbox.single .lb-count{display:none}
 .lb-count{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);text-align:center;color:var(--gold);font-size:12px;letter-spacing:.34em}
 .lb-pol.flip{animation:flip .45s cubic-bezier(.2,.8,.3,1)}
 @keyframes flip{from{opacity:0;transform:translateX(34px) rotate(3deg)}}
@@ -465,8 +443,7 @@ section:not(#hero):before{content:"✦";display:block;color:var(--gold);opacity:
 
 
 /* --- garden: scattered flowers, clear "tap me" cues --- */
-.garden{gap:6px 0;padding-bottom:6px}
-.gf{height:calc(var(--h) + 128px);translate:var(--dx,0) var(--dy,0);position:relative;min-width:0}
+.gf{height:calc(var(--h) + 128px);position:relative;min-width:0}
 .gf .tp{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#1a1204;background:var(--gold);padding:3px 9px;border-radius:99px;margin-bottom:8px;white-space:nowrap;
   box-shadow:0 0 16px rgba(228,197,143,.7);animation:tapb 1.3s ease-in-out infinite;animation-delay:var(--dl);position:relative;z-index:3}
 .gf .tp:after{content:"";position:absolute;left:50%;bottom:-4px;width:8px;height:8px;margin-left:-4px;background:var(--gold);transform:rotate(45deg)}
@@ -500,15 +477,6 @@ html{max-width:100%}
 .secret{max-width:440px;width:100%;margin-top:28px;padding:26px 0 0;border:none;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;animation:fadeIn 1s both;text-align:center}
 .secret h3{font-size:32px;margin:0 0 10px;color:var(--gold)}
 .secret p{color:var(--mute);font-size:15px;line-height:1.8;margin:0}
-.ask{margin-top:30px}
-.ask label{font-size:21px;line-height:1.4;margin-bottom:14px}
-.ask textarea{background:none;border:none;border-bottom:1px solid var(--line);border-radius:0;padding:10px 2px;min-height:112px;line-height:1.7;box-shadow:none}
-.ask textarea::placeholder{color:var(--mute);opacity:.7}
-.ask textarea:focus{border-bottom-color:var(--gold);box-shadow:none}
-.ask .btn{width:auto;display:inline-block;min-width:160px;margin-top:20px}
-.cstat{font-size:12px;letter-spacing:.04em}
-.cdone{font-size:21px}
-.ask{text-align:center}.ask textarea{text-align:left}
 
 /* off-screen flowers: pause their infinite animations */
 .gf.paused,.gf.paused *,.gf.paused *:before{animation-play-state:paused!important}
@@ -589,8 +557,6 @@ section h2.in:after{width:64px}
 .gf.open:after{background:radial-gradient(ellipse,rgba(228,197,143,.4),transparent 70%)}
 
 /* message box */
-.ask textarea{transition:border-color .3s,box-shadow .3s}
-.ask textarea:focus{box-shadow:0 14px 24px -18px rgba(228,197,143,.6)}
 
 /* finale: warm glow behind the closing words */
 #final{position:relative}
@@ -619,10 +585,9 @@ section h2.in:after{width:64px}
 .secret:before{content:"";position:absolute;inset:-70px -20px auto;height:300px;z-index:-1;pointer-events:none;background:radial-gradient(closest-side at 50% 45%,rgba(228,197,143,.17),transparent);animation:fadeIn 2.4s .1s both}
 .secret h3{animation:sUp 1.1s .15s cubic-bezier(.2,.7,.2,1) both,sFocus 1.4s .15s ease-out both}
 .secret>p{animation:sUp 1.1s .55s cubic-bezier(.2,.7,.2,1) both}
-.secret .ask label{animation:sUp 1s 1.05s cubic-bezier(.2,.7,.2,1) both}
-.secret .ask textarea{animation:sUp 1s 1.25s cubic-bezier(.2,.7,.2,1) both}
-.secret .ask .btn{animation:sUp 1s 1.45s cubic-bezier(.2,.7,.2,1) both}
-.secret .cstat{animation:sUp 1s 1.65s cubic-bezier(.2,.7,.2,1) both}
-.cdone{animation:sUp 1s cubic-bezier(.2,.7,.2,1) both}
 @keyframes sUp{from{opacity:0;transform:translateY(14px)}}
 @keyframes sFocus{from{filter:blur(6px)}}
+
+/* gerbera flowers are inline SVG: size them with the old emoji font-size */
+.gf .bl svg,.fbox .fe svg{display:block;width:1.12em;height:1.12em;margin:-.06em}
+.fbox .fe{font-size:68px;display:flex;justify-content:center}

@@ -26,7 +26,10 @@ const CONFIG = {
     eyebrow: "A letter for you",
     title: "My dearest Nindhiya,",
     paragraphs: [
-      "gatau mau isi apa."
+      "Happy birthday, Nindhiya. I hope today brings you all the happiness you deserve, and then a little more.",
+      "You are kind, bright, and wonderfully yourself, and being near you makes my days feel lighter. Thank you for being someone I can always smile around.",
+      "I wish you good health, peace in your heart, and dreams that find their way to you. I hope there is always someone cheering for you, and I would love for that someone to be me.",
+      "You mean more to me than I can put into words. Happy birthday, from the very deepest part of my heart."
     ],
     signature: "Habib"
   },
@@ -89,49 +92,29 @@ const CONFIG = {
     night:     ["Hello, night owl", "The stars came out just for you."]
   },
 
-  style: { calm: true, stars: true, balloons: false, sparkles: true, tilt: true },   // set calm:false for the full-effects version
-
-  discord: {                         // comment box → your Discord channel
-    webhook: "https://discord.com/api/webhooks/1557323520823005184/ulnxGAQ7t-ubQWPBNAar32-ZQ3UWPC8VI9PbpXJ-JOL8KFJxXdz4pPTvrXyAn7T1HKwg",
-    userId: "906384550156988428",    // who gets pinged
-    maxSends: 3                      // per page load, anti-spam
-  },
+  style: { calm: true, stars: true, sparkles: true, tilt: true },   // set calm:false for the full-effects version
 
   garden: {                          // tap a flower → a special message
     eyebrow: "A garden for you",
     title: "Pick a flower",
     flowers: [
-      { e: "🌻", t: "Sunflower",       h: "A Little Bloom of Sunshine",
-        x: "Young sunflowers follow the sun across the sky, and the flower has long stood for joy and loyalty. Being around you feels like that: everything gets a little warmer, and a little brighter." },
-      { e: "🌹", t: "Rose",            h: "A Promise, in Full Bloom",
-        x: "For a very long time, the rose has stood for deep care and respect. Here is mine, as a promise: I'll be on your side, in the easy days and the hard ones." },
-      { e: "🌷", t: "Tulip",           h: "A Wish for the Year Ahead",
-        x: "Tulips are among the first flowers of spring, so they stand for fresh starts and good wishes. Mine is simple: may this year bring every dream you're chasing a little closer." },
-      { e: "🌺", t: "Hibiscus",        h: "Warm Welcome, Gentle Heart",
-        x: "In many warm places, the hibiscus is a flower of welcome and kindness. It suits you. People feel at ease around you: calm, kind, and unforgettable." },
-      { e: "🌸", t: "Cherry Blossom",  h: "Moments Worth Keeping",
-        x: "Cherry blossoms last only a short while, which is why people stop to enjoy them while they bloom. Our memories feel that way to me: small, bright, and worth keeping. Thank you for every one." },
-      { e: "🌼", t: "Daisy",           h: "The Simplest Kind of Happy",
-        x: "The daisy's name comes from \"day's eye\", because it opens with the morning light. It stands for loyal friendship and simple joy, which is exactly what you are to me." }
+      { c: ["#ffc928", "#ffe27a"], t: "Yellow Gerbera", h: "A Little Bloom of Sunshine",
+        x: "Yellow gerberas stand for friendship and warmth. Being around you feels like that: everything gets a little brighter, and a little easier to smile at." },
+      { c: ["#ff8a2b", "#ffb067"], t: "Orange Gerbera", h: "A Wish for the Year Ahead",
+        x: "Orange gerberas stand for enthusiasm and success. Mine is a simple wish: may this year bring every dream you're chasing a little closer." },
+      { c: ["#ff5fa0", "#ff9cc4"], t: "Pink Gerbera", h: "A Thank You, in Pink",
+        x: "Pink gerberas stand for admiration and gratitude, and both are true for you. I admire how kind you are, and I'm thankful you are in my life." },
+      { c: ["#e8283c", "#ff6670"], t: "Red Gerbera", h: "A Promise, in Full Bloom",
+        x: "Red gerberas speak of deep feeling and love. Here is mine, as a promise: I'll be on your side, in the easy days and the hard ones." },
+      { c: ["#e6e9f5", "#ffffff"], t: "White Gerbera", h: "A Fresh Page Ahead",
+        x: "White gerberas stand for purity and new beginnings. Like the first morning of a new year, may every day ahead feel clear, fresh, and full of promise." },
+      { c: ["#ff9d80", "#ffc9b3"], t: "Peach Gerbera", h: "The Simplest Kind of Happy",
+        x: "Gerberas of every color carry the same gift: cheerfulness and simple joy. The peach one is the softest of them, and it reminds me of you: gentle, bright, and happy to be near." }
     ],
     secret: {
       title: "You found them all! 💐",
-      text: "Your real gift is waiting for me to hand over. Come find me, I have something printed just for you 📸🎁",
-      ask: "Before you come find me, leave me a message 💌",
-      placeholder: "Write anything you want to say...",
-      button: "Send 💌",
-      note: "(this message goes straight to Habib)",
-      empty: "Write something first 💗",
-      sent: "Sent! 💗 Habib got your message. Now come find him for your gift 🎁",
-      fail: "Couldn't send it. Check your internet and try again 💔"
+      text: "Your real gift is waiting for me to hand over. Come find me, I have something printed just for you 📸🎁"
     }
-  },
-
-  voice: {                           // record 20-30s, save as music/voice.mp3 (section hides itself if the file is missing)
-    src: "music/voice.mp3",
-    eyebrow: "One last thing",
-    title: "A little voice for you",
-    button: "Play"
   },
 
   final: {
@@ -161,7 +144,7 @@ const chime = (notes, gap = .09, vol = .05, type = "sine") => { try {
   notes.forEach((f, i) => { const o = actx.createOscillator(), g = actx.createGain(), t = t0 + i * gap; o.type = type; o.frequency.value = f; o.connect(g); g.connect(actx.destination);
     g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + 1.1); o.start(t); o.stop(t + 1.2); }); } catch (e) { } };
 const SND = { tick: () => chime([660], 0, .025), bad: () => chime([220, 185], .12, .05, "triangle"), ok: () => chime([784, 988, 1175], .1),
-  gift: () => chime([523, 659, 784, 988, 1175, 1319], .11, .05), flower: () => chime([1047, 1319], .09, .04), sent: () => chime([784, 988, 1319], .12), fw: () => chime([1568, 2093], .06, .016), blow: () => chime([392, 330], .1, .03, "triangle") };
+  gift: () => chime([523, 659, 784, 988, 1175, 1319], .11, .05), flower: () => chime([1047, 1319], .09, .04), fw: () => chime([1568, 2093], .06, .016), blow: () => chime([392, 330], .1, .03, "triangle") };
 
 /* ---------- petals / stars background ---------- */
 const pc = $("#petals"), px = pc.getContext("2d");
@@ -276,6 +259,12 @@ function loopConf() {
 }
 
 /* ---------- build the main page from CONFIG ---------- */
+/* gerbera daisy: two rings of petals around a dark centre, drawn once per flower from [outer, inner] colours */
+const gerbera = ([o, i]) => {
+  const ring = (n, cy, rx, ry, fill) => Array.from({ length: n }, (_, k) => `<ellipse cx="50" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${(k * 360 / n).toFixed(1)} 50 50)" fill="${fill}"/>`).join("");
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><g stroke="rgba(0,0,0,.14)" stroke-width=".4">${ring(21, 22, 4.8, 19, o)}${ring(15, 31, 4.2, 12, i)}</g><circle cx="50" cy="50" r="10.5" fill="#6b4a1b"/><circle cx="50" cy="50" r="6.5" fill="#3a2410"/><circle cx="47.5" cy="47.5" r="1.8" fill="rgba(255,255,255,.35)"/></svg>`;
+};
+
 const dims = {};   // natural sizes, filled by the loader, so photos reserve their space (no layout shift)
 const img = p => `<img src="${esc(p.src)}" alt="${esc(p.caption)}"${dims[p.src] ? ` width="${dims[p.src][0]}" height="${dims[p.src][1]}"` : ""} style="object-position:${esc(p.pos || "50% 50%")}" onerror="this.remove()">`;
 function cakeSVG() {
@@ -331,12 +320,9 @@ function splitWords(el) {
 function buildMain() {
   const C = CONFIG;
   const photos = C.photos.items.map((p, i) => `<div class="pol rv d${i % 3 + 1}" data-i="${i}"><div class="ph">${img(p)}</div><div class="cap">${esc(p.caption)}</div></div>`).join("");
-  const hp = C.hero.photo;
-  const heroPhoto = hp ? `<figure class="hero-photo-wrap rv"><div class="hero-photo" id="heroPhoto">${img(hp)}</div><figcaption class="serif">${esc(hp.caption)}</figcaption></figure>` : "";
   const tl = C.timeline.items.map((e, i) => `<div class="ev rv d${i % 3 + 1}"><small>${esc(e.icon)} ${esc(e.tag)}</small><b>${esc(e.title)}</b><span>${esc(e.text)}</span></div>`).join("");
   $("#app").innerHTML = `
   <section id="hero">
-    ${heroPhoto}
     ${badgeHTML()}
     <div class="cd rv">${esc(countdownText())}</div>
     <p class="eyebrow rv d1">✦ ${esc(C.hero.eyebrow)} ✦</p>
@@ -390,7 +376,6 @@ function buildMain() {
   <section id="gardenSec">
     <p class="eyebrow rv">${esc(C.garden.eyebrow)}</p>
     <h2 class="rv d1">${esc(C.garden.title)}</h2>
-    <div class="garden rv d2">${C.garden.flowers.map((f, i) => `<button class="gf" data-i="${i}" aria-label="${esc(f.t)}" style="--h:${[96, 122, 84, 110, 92, 104][i % 6]}px;--dl:${i * .35}s;--dx:${[-4, 5, -6, 6, -3, 7][i % 6]}px;--dy:${[0, 38, 12, 30, 4, 42][i % 6]}px"><span class="tp">tap me</span><span class="bl">${f.e}</span><i class="stem"></i><em class="nm">${esc(f.t)}</em></button>`).join("")}</div>
     <div class="count" id="gcount"></div>
     <div class="secret" id="gsecret"></div>
   </section>
@@ -409,14 +394,7 @@ function buildMain() {
     <h2 class="rv d1">Some stories were always meant to be</h2>
   </section>
 
-  <section id="voiceSec" class="hidden">
-    <p class="eyebrow rv">${esc(C.voice.eyebrow)}</p>
-    <h2 class="rv d1">${esc(C.voice.title)}</h2>
-    <button class="btn rv d2" id="vBtn">▶ ${esc(C.voice.button)}</button>
-    <div class="vbar rv d2"><i id="vFill"></i></div>
-  </section>
-
-  <section id="final">
+    <section id="final">
     <p class="eyebrow rv">${esc(C.final.eyebrow)}</p>
     <h2 class="rv d1">${esc(C.final.title)}<em>${esc(C.final.titleEm)}</em></h2>
     <p class="final-text rv d2">${esc(C.final.text)}</p>
@@ -424,7 +402,7 @@ function buildMain() {
     <button class="btn rv d3" id="replay">Fireworks ✦</button>
     <p class="made rv d3">with love, ${esc(C.from)}</p>
   </section>`;
-  splitLetters($("#hero h1")); $$("section h2").forEach(splitWords); scatterFlowers(); initReveal(); initCake(); initLetter(); initPhotos(); initPlayer(); initGarden(); initJar(); initVoice(); initHero(); initScrollFX();
+  splitLetters($("#hero h1")); $$("section h2").forEach(splitWords); scatterFlowers(); initReveal(); initCake(); initLetter(); initPhotos(); initPlayer(); initGarden(); initJar(); initHero(); initScrollFX();
 }
 
 /* ---------- scroll reveal ---------- */
@@ -459,20 +437,19 @@ function initLetter() {
     }
     $("#sig").classList.add("in");
   };
-  $("#seal").onclick = e => { $("#seal").classList.add("gone"); SND.ok(); const r = $("#seal").getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + r.height / 2, 60); setTimeout(run, 500); };
+  $("#seal").onclick = () => { $("#seal").classList.add("gone"); SND.ok(); const r = $("#seal").getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + r.height / 2, 60); setTimeout(run, 500); };
 }
 
 /* ---------- photos + lightbox (swipe / arrows) ---------- */
 function initPhotos() {
-  const items = CONFIG.photos.items, lb = $("#lightbox"); let idx = -1, swiped = false, x0 = null;
-  const render = () => { const p = idx >= 0 ? items[idx] : CONFIG.hero.photo;
+  const items = CONFIG.photos.items, lb = $("#lightbox"); let idx = 0, swiped = false, x0 = null;
+  const render = () => { const p = items[idx];
     $("#lbPol").innerHTML = `<div class="ph">${img(p)}</div><div class="cap">${esc(p.caption)}</div>`;
-    $("#lbCount").textContent = idx >= 0 ? (idx + 1) + " / " + items.length : ""; lb.classList.toggle("single", idx < 0); };
+    $("#lbCount").textContent = (idx + 1) + " / " + items.length; };
   const open = i => { idx = i; render(); lb.classList.remove("hidden"); };
-  const step = d => { if (idx < 0) return; idx = (idx + d + items.length) % items.length; const pol = $("#lbPol"); pol.classList.remove("flip"); void pol.offsetWidth; pol.classList.add("flip"); render(); SND.tick(); };
+  const step = d => { idx = (idx + d + items.length) % items.length; const pol = $("#lbPol"); pol.classList.remove("flip"); void pol.offsetWidth; pol.classList.add("flip"); render(); SND.tick(); };
   const close = () => lb.classList.add("hidden");
   $$(".pol").forEach(el => el.onclick = () => open(+el.dataset.i));
-  if ($("#heroPhoto")) $("#heroPhoto").onclick = () => open(-1);
   $("#lbClose").onclick = close; $("#lbPrev").onclick = e => { e.stopPropagation(); step(-1); }; $("#lbNext").onclick = e => { e.stopPropagation(); step(1); };
   lb.onclick = e => { if (swiped) { swiped = false; return; } if (e.target.id === "lightbox") close(); };
   lb.addEventListener("pointerdown", e => { x0 = e.clientX; });
@@ -518,9 +495,10 @@ function initJar() {
   $("#shake").onclick = $("#jar").onclick = () => {
     const j = $("#jar"); j.classList.remove("shake"); void j.offsetWidth; j.classList.add("shake");
     if (!bag.length) { bag = [...CONFIG.jar.reasons].sort(() => Math.random() - .5); shown = 0; }
+    const reason = bag.pop();   // take it now: two quick taps must never read the same (or an empty) bag
     setTimeout(() => {
       const n = $("#note"); n.classList.remove("show"); void n.offsetWidth;
-      n.textContent = "“" + bag.pop() + "”"; n.classList.add("show"); shown++;
+      n.textContent = "“" + reason + "”"; n.classList.add("show"); shown++;
       $("#count").textContent = shown + " / " + total;
       const r = j.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + 20, 40);
     }, 500);
@@ -606,12 +584,10 @@ function initFX() {
     e.style.cssText = `left:${x}px;top:${y}px;--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d}px;font-size:${rand(10, 20)}px`;
     document.body.appendChild(e); setTimeout(() => e.remove(), 900); } };
   let last = 0;
-  CONFIG.style.sparkles && !reduced && addEventListener("pointerdown", e => { if (!e.target.closest("button")) sp(e.clientX, e.clientY, 7, 90); });
-  CONFIG.style.sparkles && !reduced && addEventListener("pointermove", e => { const t = Date.now(); if (t - last > 70 && e.pointerType === "mouse") { last = t; sp(e.clientX, e.clientY, 1, 30); } });
-  setInterval(() => { if (document.hidden || !CONFIG.style.balloons) return;                                                  // rising balloons
-    const b = document.createElement("span"); b.className = "balloon"; b.textContent = ["🎈", "🎈", "💗", "🎀"][Math.random() * 4 | 0];
-    b.style.cssText = `left:${rand(2, 92)}vw;font-size:${rand(26, 44)}px;animation-duration:${rand(9, 15)}s`;
-    document.body.appendChild(b); setTimeout(() => b.remove(), 16000); }, 2600);
+  if (CONFIG.style.sparkles && !reduced) {
+    addEventListener("pointerdown", e => { if (!e.target.closest("button")) sp(e.clientX, e.clientY, 7, 90); });
+    addEventListener("pointermove", e => { const t = Date.now(); if (t - last > 70 && e.pointerType === "mouse") { last = t; sp(e.clientX, e.clientY, 1, 30); } });
+  }
   (CONFIG.style.tilt && !reduced ? $$(".pol") : []).forEach(el => {                                                                         // 3D tilt + glare on photos
     const gl = document.createElement("i"); gl.className = "glare"; el.querySelector(".ph").appendChild(gl);
     el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
@@ -629,16 +605,18 @@ function initFX() {
     else clearInterval(fw); }, { threshold: .5 }).observe($("#final"));
 }
 
-/* ---------- scatter the six flowers across the page (still one .gf button each) ---------- */
+/* ---------- the six flowers, each placed in its own section: [section id, side, desktop top %] ---------- */
+const FLOWER_SPOTS = [["cakeSec", "r", 16], ["photoSec", "l", 7], ["tlSec", "r", 12], ["plSec", "l", 6], ["gardenSec", "c", 0], ["jarSec", "r", 12]];
 function scatterFlowers() {
-  // [section id, side, top % on desktop]
-  const spots = [["cakeSec", "r", 16], ["photoSec", "l", 7], ["tlSec", "r", 12], ["plSec", "l", 6], ["gardenSec", "c", 0], ["jarSec", "r", 12]];
-  $$(".gf").forEach((b, i) => { const [id, side, top] = spots[i % spots.length], sec = $("#" + id); if (!sec) return;
-    b.classList.add("scat", "s" + side); b.style.setProperty("--top", top + "%");
-    const anchor = id === "gardenSec" ? $("#gcount") : null; anchor ? sec.insertBefore(b, anchor) : sec.appendChild(b); });
-  $(".garden") && $(".garden").remove();
   const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("paused", !e.isIntersecting)), { rootMargin: "80px" });
-  $$(".gf").forEach(b => io.observe(b));   // sway / halo / "tap me" loops only run while the flower is visible
+  CONFIG.garden.flowers.forEach((f, i) => {
+    const [id, side, top] = FLOWER_SPOTS[i % FLOWER_SPOTS.length], sec = $("#" + id), b = document.createElement("button");
+    b.className = `gf scat s${side}`; b.dataset.i = i; b.setAttribute("aria-label", f.t);
+    b.style.cssText = `--h:${[96, 122, 84, 110, 92, 104][i % 6]}px;--dl:${i * .35}s;--top:${top}%`;
+    b.innerHTML = `<span class="tp">tap me</span><span class="bl">${gerbera(f.c)}</span><i class="stem"></i><em class="nm">${esc(f.t)}</em>`;
+    side === "c" ? sec.insertBefore(b, $("#gcount")) : sec.appendChild(b);
+    io.observe(b);   // sway / halo / "tap me" loops only run while the flower is visible
+  });
 }
 
 /* ---------- flower garden ---------- */
@@ -649,44 +627,18 @@ function initGarden() {
   const card = document.createElement("div"); card.className = "fcard hidden"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true");
   card.innerHTML = '<div class="fbox"><div class="fe"></div><div class="fn"></div><h3 class="serif"></h3><i class="fr"></i><p></p><button class="btn">Close 💗</button></div>';
   document.body.appendChild(card);
-  const secret = () => { const g = $("#gsecret"), S = G.secret, D = CONFIG.discord; let sends = 0;
-    g.innerHTML = `<h3 class="serif">${esc(S.title)}</h3><p>${esc(S.text)}</p><div class="ask"><label for="cmt">${esc(S.ask)}</label>
-      <textarea id="cmt" maxlength="500" rows="4" placeholder="${esc(S.placeholder)}"></textarea>
-      <button class="btn" id="cmtBtn">${esc(S.button)}</button><div class="cstat" id="cstat">${esc(S.note)}</div></div>`;
+  const secret = () => { const g = $("#gsecret"), S = G.secret;
+    g.innerHTML = `<h3 class="serif">${esc(S.title)}</h3><p>${esc(S.text)}</p>`;
     g.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
     [0, 700].forEach(t => setTimeout(() => confetti(rand(.2, .8) * innerWidth, rand(.2, .5) * innerHeight, 90), t)); barrage(3);
-    $("#cmtBtn").onclick = async () => {
-      const txt = $("#cmt").value.trim(), st = $("#cstat"), btn = $("#cmtBtn");
-      if (!txt) { st.textContent = S.empty; return; }
-      if (sends >= D.maxSends) return;
-      btn.disabled = true; btn.textContent = "...";
-      try {
-        const r = await fetch(D.webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-          username: "Birthday Site 🎂", allowed_mentions: { users: [D.userId] },
-          content: `<@${D.userId}> 💌 New message from **${CONFIG.name}**:\n>>> ${txt.slice(0, 1500)}` }) });
-        if (!r.ok) throw new Error(r.status);
-        SND.sent(); sends++; $(".ask", g).innerHTML = `<div class="cdone">${esc(S.sent)}</div>`; confetti(innerWidth / 2, innerHeight / 2, 160);
-      } catch (e) { st.textContent = S.fail; btn.disabled = false; btn.textContent = S.button; }
-    };
   };
   card.onclick = e => { if (e.target === card || e.target.tagName === "BUTTON") { card.classList.add("hidden"); if (done.size === total && !$("#gsecret").innerHTML) setTimeout(secret, 300); } };
   $$(".gf").forEach(b => b.onclick = () => {
     const f = G.flowers[+b.dataset.i], first = !b.classList.contains("open"); SND.flower(); b.classList.add("open"); done.add(+b.dataset.i); cnt();
     const r = b.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + 20, 18); navigator.vibrate && navigator.vibrate(40);
-    const show = () => { $(".fe", card).textContent = f.e; $(".fn", card).textContent = f.t; $("h3", card).textContent = f.h; $("p", card).textContent = f.x; card.classList.remove("hidden"); $(".btn", card).focus({ preventScroll: true }); };
+    const show = () => { $(".fe", card).innerHTML = gerbera(f.c); $(".fn", card).textContent = f.t; $("h3", card).textContent = f.h; $("p", card).textContent = f.x; card.classList.remove("hidden"); $(".btn", card).focus({ preventScroll: true }); };
     first && !reduced ? setTimeout(show, 800) : show();   // first tap: let the flower bloom before its message appears
   });
-}
-
-/* ---------- voice note ---------- */
-function initVoice() {
-  const V = CONFIG.voice, sec = $("#voiceSec"); if (!V || !sec) return;
-  const a = new Audio(); a.preload = "metadata"; a.src = V.src; let resume = false;
-  a.oncanplay = () => sec.classList.remove("hidden");
-  $("#vBtn").onclick = () => { if (a.paused) { resume = !audio.paused; audio.pause(); a.play().catch(() => sec.remove()); } else a.pause(); };
-  a.onplay = () => $("#vBtn").textContent = "⏸ Pause";
-  a.onpause = () => { $("#vBtn").textContent = "▶ " + V.button; if (a.ended && resume) audio.play().catch(() => { }); };
-  a.ontimeupdate = () => $("#vFill").style.width = (a.currentTime / a.duration * 100 || 0) + "%";
 }
 
 /* ---------- hero letter-by-letter reveal ---------- */
@@ -723,7 +675,7 @@ function initHero() {
 
 /* ---------- scroll effects: progress bar, photo parallax, glowing timeline, section dots ---------- */
 function initScrollFX() {
-  const pols = $$(".pol"), tl = $(".tl"), evs = $$(".ev"), secs = $$("main section:not(#voiceSec)"), fine = !reduced && matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const pols = $$(".pol"), tl = $(".tl"), evs = $$(".ev"), secs = $$("main section"), fine = !reduced && matchMedia("(hover: hover) and (pointer: fine)").matches;
   const bar = document.createElement("div"); bar.id = "scrollbar"; document.body.appendChild(bar);
   const nav = document.createElement("nav"); nav.id = "snav"; nav.setAttribute("aria-label", "Sections");
   secs.forEach((sec, i) => { const b = document.createElement("button"); const h = sec.querySelector("h2, h1"); b.setAttribute("aria-label", h ? (h.getAttribute("aria-label") || h.textContent) : "Section " + (i + 1)); b.onclick = () => sec.scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); nav.appendChild(b); });
