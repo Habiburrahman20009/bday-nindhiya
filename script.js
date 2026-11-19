@@ -26,10 +26,10 @@ const CONFIG = {
     eyebrow: "A letter for you",
     title: "My dearest Nindhiya,",
     paragraphs: [
-      "Happy birthday, Nindhiya. I hope today brings you all the happiness you deserve, and then a little more.",
-      "You are kind, bright, and wonderfully yourself, and being near you makes my days feel lighter. Thank you for being someone I can always smile around.",
-      "I wish you good health, peace in your heart, and dreams that find their way to you. I hope there is always someone cheering for you, and I would love for that someone to be me.",
-      "You mean more to me than I can put into words. Happy birthday, from the very deepest part of my heart."
+      "Happy birthday, Nindhiya. I hope today brings you all the happiness you deserve, and then a little more",
+      "You are kind, bright, and wonderfully yourself, and being around you always makes things a little better. Thank you for all the little moments, conversations, and memories that bring a smile to my face.",
+      "I wish you good health, happiness, and success in everything you do. May this new chapter bring you new experiences, beautiful memories, and plenty of reasons to smile. Keep being yourself, and never stop chasing the things you dream of.",
+      "I hope you enjoy your special day and that the year ahead brings you many wonderful things. Happy birthday!"
     ],
     signature: "Habib"
   },
