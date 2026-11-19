@@ -113,7 +113,7 @@ const CONFIG = {
     ],
     secret: {
       title: "You found them all! 💐",
-      text: "Your real gift is waiting for me to hand over. Come find me, I have something printed just for you 📸🎁"
+      text: "Thank you for clicking the flowers and taking a little time to read this. I hope the small details and words here brought a smile to your face. I made this little surprise just for you. I hope you like it! 🌼"
     }
   },
 
