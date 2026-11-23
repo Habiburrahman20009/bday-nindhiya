@@ -12,7 +12,7 @@ const CONFIG = {
   hero: {
     eyebrow: "You're the star of today",
     date: "20 November · the most special day",
-    quote: "a few words for you"
+    quote: "Wishing you happiness, good health, and all your dreams come true 💗"
   },
 
   cake: {
@@ -26,10 +26,10 @@ const CONFIG = {
     eyebrow: "A letter for you",
     title: "My dearest Nindhiya,",
     paragraphs: [
-      "Happy birthday, Nindhiya. I hope today brings you all the happiness you deserve, and then a little more",
-      "You are kind, bright, and wonderfully yourself, and being around you always makes things a little better. Thank you for all the little moments, conversations, and memories that bring a smile to my face.",
-      "I wish you good health, happiness, and success in everything you do. May this new chapter bring you new experiences, beautiful memories, and plenty of reasons to smile. Keep being yourself, and never stop chasing the things you dream of.",
-      "I hope you enjoy your special day and that the year ahead brings you many wonderful things. Happy birthday!"
+      "Happy birthday, Nindhiya. I hope today brings you all the happiness you deserve, and then a little more.",
+      "You are kind, bright, and wonderfully yourself, and being near you makes my days feel lighter. Thank you for being someone I can always smile around.",
+      "I wish you good health, peace in your heart, and dreams that find their way to you. I hope there is always someone cheering for you, and I would love for that someone to be me.",
+      "You mean more to me than I can put into words. Happy birthday, from the very deepest part of my heart."
     ],
     signature: "Habib"
   },
@@ -113,7 +113,7 @@ const CONFIG = {
     ],
     secret: {
       title: "You found them all! 💐",
-      text: "Thank you for clicking the flowers and taking a little time to read this. I hope the small details and words here brought a smile to your face. I made this little surprise just for you. I hope you like it! 🌼"
+      text: "Your real gift is waiting for me to hand over. Come find me, I have something printed just for you 📸🎁"
     }
   },
 
@@ -191,7 +191,7 @@ function drawPetals(t = performance.now()) {
     petals.forEach(p => {
       p.y += p.v * k; p.x += Math.sin(p.y / 40) * p.w * k; p.a += p.r * k;
       px.save(); px.scale(DPR, DPR); px.translate(p.x, p.y); px.rotate(p.a);
-      px.globalAlpha = p.o * Math.max(0, Math.min(1, p.y / 70, (SH - p.y) / 90)); px.fillStyle = p.c; px.font = p.s + "px serif"; px.fillText(p.ch, 0, 0); px.restore();
+      px.globalAlpha = p.o; px.fillStyle = p.c; px.font = p.s + "px serif"; px.fillText(p.ch, 0, 0); px.restore();
     });
     petals = petals.filter(p => p.y < SH + 30);
   }
@@ -308,7 +308,7 @@ function badgeHTML() {
     <text><textPath href="#circ" textLength="512" lengthAdjust="spacing">${esc(txt)}</textPath></text></svg>
     <div class="core"><span class="num" id="ageNum">0</span></div></div>`;
 }
-function countUp(el, to, ms = 1900) { const t0 = performance.now(); const f = t => { const k = Math.min(1, (t - t0) / ms); el.textContent = Math.round(to * (k >= 1 ? 1 : 1 - Math.pow(2, -10 * k))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+function countUp(el, to, ms = 1500) { const t0 = performance.now(); const f = t => { const k = Math.min(1, (t - t0) / ms); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
 function splitWords(el) {
   el.setAttribute("aria-label", el.textContent); let i = 0;
   const go = n => [...n.childNodes].forEach(c => {
@@ -407,7 +407,7 @@ function buildMain() {
 
 /* ---------- scroll reveal ---------- */
 function initReveal() {
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const t = e.target; t.classList.add("in"); io.unobserve(t); setTimeout(() => t.classList.add("done"), 1800); } }), { threshold: .15, rootMargin: "0px 0px -6% 0px" });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .15 });
   $$(".rv").forEach(el => io.observe(el));
 }
 
@@ -428,22 +428,13 @@ function initCake() {
 function initLetter() {
   let started = false;
   const letter = $("#letter"), body = $("#lbody");
-  const slots = CONFIG.letter.paragraphs.map(text => {      // every paragraph is laid out up-front (text hidden): the letter never grows or re-centres while typing
-    const p = document.createElement("p"), on = document.createElement("span"), off = document.createElement("span");
-    on.className = "t-on"; off.className = "t-off"; off.textContent = text; p.append(on, off); body.appendChild(p); return { text, on, off }; });
-  const type = ({ text, on, off }) => new Promise(res => {   // driven by animation frames, so it stays even and smooth
-    let i = 0, next = performance.now();
-    const step = t => {
-      let n = 0;
-      while (t >= next && i < text.length && n++ < 4) { const ch = text[i++]; next += ch === "," ? 120 : /[.!?]/.test(ch) ? 220 : 14 + Math.random() * 8; }
-      if (n) { on.textContent = text.slice(0, i); off.textContent = text.slice(i); }
-      i < text.length ? requestAnimationFrame(step) : res();
-    };
-    requestAnimationFrame(step);
-  });
   const run = async () => {
     if (started) return; started = true;
-    for (const s of slots) { s.on.classList.add("caret"); await type(s); s.on.classList.remove("caret"); await wait(380); }
+    for (const text of CONFIG.letter.paragraphs) {
+      const p = document.createElement("p"); p.className = "caret"; body.appendChild(p);
+      for (const ch of text) { p.textContent += ch; await wait(ch === "," || ch === "." ? 80 : 15); }
+      p.classList.remove("caret");
+    }
     $("#sig").classList.add("in");
   };
   $("#seal").onclick = () => { $("#seal").classList.add("gone"); SND.ok(); const r = $("#seal").getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + r.height / 2, 60); setTimeout(run, 500); };
@@ -455,31 +446,25 @@ function initPhotos() {
   const render = () => { const p = items[idx];
     $("#lbPol").innerHTML = `<div class="ph">${img(p)}</div><div class="cap">${esc(p.caption)}</div>`;
     $("#lbCount").textContent = (idx + 1) + " / " + items.length; };
-  let lbT = 0; const open = i => { clearTimeout(lbT); lb.classList.remove("closing"); idx = i; render(); lb.classList.remove("hidden"); };
+  const open = i => { idx = i; render(); lb.classList.remove("hidden"); };
   const step = d => { idx = (idx + d + items.length) % items.length; const pol = $("#lbPol"); pol.classList.remove("flip"); void pol.offsetWidth; pol.classList.add("flip"); render(); SND.tick(); };
-  const close = () => { if (lb.classList.contains("hidden") || lb.classList.contains("closing")) return; lb.classList.add("closing"); lbT = setTimeout(() => { lb.classList.add("hidden"); lb.classList.remove("closing"); }, 280); };
+  const close = () => lb.classList.add("hidden");
   $$(".pol").forEach(el => el.onclick = () => open(+el.dataset.i));
   $("#lbClose").onclick = close; $("#lbPrev").onclick = e => { e.stopPropagation(); step(-1); }; $("#lbNext").onclick = e => { e.stopPropagation(); step(1); };
   lb.onclick = e => { if (swiped) { swiped = false; return; } if (e.target.id === "lightbox") close(); };
   lb.addEventListener("pointerdown", e => { x0 = e.clientX; });
   lb.addEventListener("pointerup", e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 55) { swiped = true; step(dx < 0 ? 1 : -1); } });
-  addEventListener("keydown", e => { if (lb.classList.contains("hidden") || lb.classList.contains("closing")) return; if (e.key === "Escape") close(); else if (e.key === "ArrowRight") step(1); else if (e.key === "ArrowLeft") step(-1); });
+  addEventListener("keydown", e => { if (lb.classList.contains("hidden")) return; if (e.key === "Escape") close(); else if (e.key === "ArrowRight") step(1); else if (e.key === "ArrowLeft") step(-1); });
 }
 
 /* ---------- music player ---------- */
 const audio = new Audio(); audio.preload = "metadata"; let cur = 0;
-let fadeRaf = 0, fadingOut = false;   // gentle volume ramps (browsers that lock volume, like iOS, simply play at normal level)
-function fadeTo(v, ms, done) { cancelAnimationFrame(fadeRaf); const v0 = audio.volume, t0 = performance.now();
-  const f = t => { const k = Math.min(1, (t - t0) / ms), e = k * k * (3 - 2 * k); audio.volume = Math.max(0, Math.min(1, v0 + (v - v0) * e)); if (k < 1) fadeRaf = requestAnimationFrame(f); else done && done(); };
-  fadeRaf = requestAnimationFrame(f); }
-const fadePause = () => { fadingOut = true; fadeTo(0, 520, () => { fadingOut = false; audio.pause(); audio.volume = 1; }); };
 function loadSong(i, play) {
   const songs = CONFIG.playlist.songs; cur = (i + songs.length) % songs.length;
-  const s = songs[cur], wasOn = play && !audio.paused;
+  const s = songs[cur]; audio.src = s.src;
   $("#pTitle").textContent = s.title; $("#pArtist").textContent = s.artist; $("#pNote").textContent = s.note || "";
   $$(".trk").forEach((t, k) => t.classList.toggle("on", k === cur));
-  const go = () => { audio.src = s.src; if (play) audio.play().catch(() => toast("Add your mp3 files to the /music folder 🎵")); };
-  wasOn ? fadeTo(0, 260, go) : go();
+  if (play) audio.play().catch(() => toast("Add your mp3 files to the /music folder 🎵"));
 }
 function syncPlayUI() {
   const on = !audio.paused;
@@ -488,12 +473,12 @@ function syncPlayUI() {
 function initPlayer() {
   $("#tracks").innerHTML = CONFIG.playlist.songs.map((s, i) => `<div class="trk" data-i="${i}"><div>${esc(s.title)}<small>${esc(s.artist)}</small></div><span>♪</span></div>`).join("");
   $$(".trk").forEach(t => t.onclick = () => loadSong(+t.dataset.i, true));
-  $("#pp").onclick = () => audio.paused ? audio.play().catch(() => toast("Add your mp3 files to the /music folder 🎵")) : fadingOut ? (fadingOut = false, fadeTo(1, 400)) : fadePause();
+  $("#pp").onclick = () => audio.paused ? audio.play().catch(() => toast("Add your mp3 files to the /music folder 🎵")) : audio.pause();
   $("#prev").onclick = () => loadSong(cur - 1, true); $("#next").onclick = () => loadSong(cur + 1, true);
   $("#bar").onclick = e => { const r = e.currentTarget.getBoundingClientRect(); if (audio.duration) audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; };
   audio.ontimeupdate = () => { $("#barFill").style.width = (audio.currentTime / audio.duration * 100 || 0) + "%"; $("#tNow").textContent = fmt(audio.currentTime); };
   audio.onloadedmetadata = () => $("#tAll").textContent = fmt(audio.duration);
-  audio.onplay = () => { audio.volume = 0; fadeTo(1, 1300); syncPlayUI(); }; audio.onpause = syncPlayUI; audio.onended = () => loadSong(cur + 1, true);
+  audio.onplay = audio.onpause = syncPlayUI; audio.onended = () => loadSong(cur + 1, true);
   $("#musicBtn").onclick = () => $("#pp").click();
   loadSong(0, false);
   const bars = $$("#viz i"); let rest = false;
@@ -521,7 +506,7 @@ function initJar() {
 }
 
 /* ---------- opening sequence ---------- */
-const leave = el => { el.classList.remove("fade-in"); void el.offsetWidth; el.classList.add("out"); setTimeout(() => el.classList.add("hidden"), 1050); };
+const leave = el => { el.classList.add("out"); setTimeout(() => el.classList.add("hidden"), 950); };
 const show = el => { el.classList.remove("hidden", "out"); el.classList.add("fade-in"); };
 
 function startLock() {
@@ -612,10 +597,7 @@ function initFX() {
   });
   if (matchMedia("(hover:hover) and (pointer:fine)").matches) {                                        // spotlight follows the mouse
     const g = document.createElement("div"); g.id = "glow"; document.body.appendChild(g);
-    let gx = 0, gy = 0, tx = 0, ty = 0, gRun = false;
-    const glide = () => { gx += (tx - gx) * .12; gy += (ty - gy) * .12; g.style.transform = `translate3d(${gx.toFixed(1)}px,${gy.toFixed(1)}px,0)`;
-      if (Math.abs(tx - gx) + Math.abs(ty - gy) > .3) requestAnimationFrame(glide); else gRun = false; };
-    addEventListener("pointermove", e => { const first = !g.classList.contains("on"); tx = e.clientX; ty = e.clientY; if (first) { gx = tx; gy = ty; } g.classList.add("on"); if (!gRun) { gRun = true; requestAnimationFrame(glide); } }, { passive: true });
+    addEventListener("pointermove", e => { g.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; g.classList.add("on"); }, { passive: true });
     document.addEventListener("pointerleave", () => g.classList.remove("on"));
   }
   let fw; new IntersectionObserver(es => {                                                           // fireworks at the end
@@ -650,11 +632,11 @@ function initGarden() {
     g.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
     [0, 700].forEach(t => setTimeout(() => confetti(rand(.2, .8) * innerWidth, rand(.2, .5) * innerHeight, 90), t)); barrage(3);
   };
-  card.onclick = e => { if (e.target === card || e.target.tagName === "BUTTON") { if (card.classList.contains("closing")) return; card.classList.add("closing"); card._t = setTimeout(() => { card.classList.add("hidden"); card.classList.remove("closing"); if (done.size === total && !$("#gsecret").innerHTML) setTimeout(secret, 200); }, 320); } };
+  card.onclick = e => { if (e.target === card || e.target.tagName === "BUTTON") { card.classList.add("hidden"); if (done.size === total && !$("#gsecret").innerHTML) setTimeout(secret, 300); } };
   $$(".gf").forEach(b => b.onclick = () => {
     const f = G.flowers[+b.dataset.i], first = !b.classList.contains("open"); SND.flower(); b.classList.add("open"); done.add(+b.dataset.i); cnt();
     const r = b.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + 20, 18); navigator.vibrate && navigator.vibrate(40);
-    const show = () => { $(".fe", card).innerHTML = gerbera(f.c); $(".fn", card).textContent = f.t; $("h3", card).textContent = f.h; $("p", card).textContent = f.x; clearTimeout(card._t); card.classList.remove("closing", "hidden"); $(".btn", card).focus({ preventScroll: true }); };
+    const show = () => { $(".fe", card).innerHTML = gerbera(f.c); $(".fn", card).textContent = f.t; $("h3", card).textContent = f.h; $("p", card).textContent = f.x; card.classList.remove("hidden"); $(".btn", card).focus({ preventScroll: true }); };
     first && !reduced ? setTimeout(show, 800) : show();   // first tap: let the flower bloom before its message appears
   });
 }
@@ -693,7 +675,7 @@ function initHero() {
 
 /* ---------- scroll effects: progress bar, photo parallax, glowing timeline, section dots ---------- */
 function initScrollFX() {
-  const hero = $("#hero"), pols = $$(".pol"), tl = $(".tl"), evs = $$(".ev"), secs = $$("main section"), fine = !reduced && matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const pols = $$(".pol"), tl = $(".tl"), evs = $$(".ev"), secs = $$("main section"), fine = !reduced && matchMedia("(hover: hover) and (pointer: fine)").matches;
   const bar = document.createElement("div"); bar.id = "scrollbar"; document.body.appendChild(bar);
   const nav = document.createElement("nav"); nav.id = "snav"; nav.setAttribute("aria-label", "Sections");
   secs.forEach((sec, i) => { const b = document.createElement("button"); const h = sec.querySelector("h2, h1"); b.setAttribute("aria-label", h ? (h.getAttribute("aria-label") || h.textContent) : "Section " + (i + 1)); b.onclick = () => sec.scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); nav.appendChild(b); });
@@ -705,8 +687,7 @@ function initScrollFX() {
     const pr = fine ? pols.map(el => el.getBoundingClientRect()) : [], tr = tl && tl.getBoundingClientRect();
     const er = evs.map(e => e.getBoundingClientRect().top), sr = secs.map(sec => sec.getBoundingClientRect());
     // write phase
-    bar.style.transform = "scaleX(" + Math.min(1, sy / max || 0).toFixed(4) + ")";
-    if (hero && !reduced) { const hp = Math.min(1, Math.max(0, sy / (vh * .9))).toFixed(3); if (hero._hp !== hp) { hero._hp = hp; hero.style.setProperty("--hp", hp); } }   // transform: no layout/paint per frame
+    bar.style.transform = "scaleX(" + Math.min(1, sy / max || 0).toFixed(4) + ")";   // transform: no layout/paint per frame
     fine && pols.forEach((el, i) => { const r = pr[i]; if (r.bottom < -120 || r.top > vh + 120) return; const v = (((r.top + r.height / 2) / vh - .5) * -28).toFixed(1) + "px"; if (el._py !== v) { el._py = v; el.style.setProperty("--py", v); } });
     if (tr) tl.style.setProperty("--p", Math.min(1, Math.max(0, (vh * .62 - tr.top) / tr.height)).toFixed(3));
     evs.forEach((e, i) => e.classList.toggle("lit", er[i] < vh * .64));
